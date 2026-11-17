@@ -55,13 +55,13 @@ A PDF document containing:
 
 ## Team
 
-| Member | GitHub |
-|--------|--------|
-| Julian Cano | [JulianCanoDev](https://github.com/JulianCanoDev) |
-| Team member 2 | — |
-| Team member 3 | — |
-| Team member 4 | — |
-| Team member 5 | — |
+| Member | Role | GitHub |
+|--------|------|--------|
+| Julián Cano | Base setup, containerization and architecture | [JulianCanoDev](https://github.com/JulianCanoDev) |
+| Leo Diaz | Models: base entity and client | — |
+| John Arroyo | Services and custom exceptions | — |
+| Camilo | Reservations and logging | — |
+| Santiago | Simulation and error handling | — |
 
 ## Technologies
 
