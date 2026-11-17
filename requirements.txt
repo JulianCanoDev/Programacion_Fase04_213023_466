@@ -1,0 +1,5 @@
+# Software FJ - Universidad UNAD (213023_466)
+# El sistema usa exclusivamente la biblioteca estandar de Python.
+# No se requiere ningun motor de base de datos: todos los datos
+# se administran en memoria mediante objetos y listas.
+# Sin dependencias externas.

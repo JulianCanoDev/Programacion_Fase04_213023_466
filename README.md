@@ -65,6 +65,198 @@ A PDF document containing:
 
 ## Technologies
 
-- Programming language: Java (as assigned in Anexo 3).
+- Programming language: Python 3.12+ (standard library only — **no database engine**; all data lives in memory as objects and lists).
 - Version control: Git.
 - Repository hosting and collaboration: GitHub.
+- Containerization (optional): Docker.
+
+## System: Software FJ — Service Reservations
+
+"Software FJ" is an object-oriented application that manages clients, services
+(rooms, equipment, consulting) and reservations with strict data validation,
+custom exceptions and full event/error logging. The only file I/O performed by
+the system is the log file `logs/software_fj.log`.
+
+### Team assignments
+
+| Member | Responsibility | Files |
+|--------|----------------|-------|
+| Julián Cano | Base setup, containerization and architecture | `Dockerfile`, `requirements.txt`, `README.md` |
+| Leo Diaz | Domain model: base entity and client | `models/entidades.py`, `models/cliente.py` |
+| John Arroyo | Services (polymorphism) and custom exceptions | `models/servicios.py`, `utils/excepciones.py` |
+| Camilo | Reservations and logging | `models/reserva.py`, `utils/logger.py` |
+| Santiago | Simulation of 10+ operations with advanced exception handling | `main.py` |
+
+### Project structure
+
+```
+.
+├── Dockerfile              # Base setup (Julián Cano)
+├── requirements.txt        # Base setup (Julián Cano)
+├── README.md               # Base setup + UML (Julián Cano)
+├── main.py                 # Simulation (Santiago)
+├── models/
+│   ├── entidades.py        # Abstract base entity (Leo Diaz)
+│   ├── cliente.py          # Cliente with strict validation (Leo Diaz)
+│   ├── servicios.py        # Servicio hierarchy (John Arroyo)
+│   └── reserva.py          # Reserva + GestorReservas (Camilo)
+├── utils/
+│   ├── excepciones.py      # Custom exception hierarchy (John Arroyo)
+│   └── logger.py           # Event/error log configuration (Camilo)
+└── logs/
+    └── software_fj.log     # Only file I/O allowed (auto-generated)
+```
+
+### UML Class Diagram
+
+```mermaid
+classDiagram
+    class EntidadBase {
+        <<abstract>>
+        -int _id
+        -str _nombre
+        -datetime _fecha_registro
+        +id: int
+        +nombre: str
+        +fecha_registro: datetime
+        +obtener_descripcion()* str
+    }
+
+    class Cliente {
+        -str _documento
+        -str _apellido
+        -str _email
+        -str _telefono
+        +nombre_completo: str
+        +obtener_descripcion() str
+    }
+
+    class Servicio {
+        <<abstract>>
+        -str _codigo
+        -float _precio_base
+        -float _tarifa_iva
+        +calcular_costo(duracion_horas)* float
+        +_validar_parametros_especificos()*
+        +calcular_impuesto(tarifa, costo) float
+        +aplicar_descuento(porcentaje, monto) float
+        +obtener_descripcion() str
+    }
+
+    class ServicioSala {
+        -int _capacidad
+        -bool _incluye_proyector
+        +calcular_costo(duracion_horas) float
+        +obtener_descripcion() str
+    }
+
+    class ServicioEquipo {
+        -int _unidades
+        +calcular_costo(duracion_horas) float
+        +obtener_descripcion() str
+    }
+
+    class ServicioConsultoria {
+        -str _nivel_experiencia
+        +calcular_costo(duracion_horas) float
+        +obtener_descripcion() str
+    }
+
+    class EstadoReserva {
+        <<enumeration>>
+        PENDIENTE
+        CONFIRMADA
+        CANCELADA
+    }
+
+    class Reserva {
+        -str _codigo
+        -EstadoReserva _estado
+        -float _duracion_horas
+        -str _motivo_cancelacion
+        +costo_estimado: float
+        +esta_activa: bool
+        +confirmar()
+        +cancelar(motivo)
+    }
+
+    class GestorReservas {
+        -list~Reserva~ _reservas
+        +LIMITE_ACTIVAS_POR_CLIENTE: int
+        +crear(cliente, servicio, duracion_horas) Reserva
+        +confirmar(codigo) Reserva
+        +cancelar(codigo, motivo) Reserva
+        +por_cliente(documento) list~Reserva~
+        +resumen() dict
+    }
+
+    class ErrorSoftwareFJ {
+        <<exception>>
+        -str detalle
+    }
+    class ErrorValidacion
+    class ErrorClienteInvalido
+    class ErrorServicioInvalido
+    class ErrorReservaInvalida
+    class ErrorEstadoReserva
+    class ErrorDisponibilidad
+    class ErrorOperacion
+
+    EntidadBase <|-- Cliente : herencia
+    EntidadBase <|-- Servicio : herencia
+    Servicio <|-- ServicioSala : herencia
+    Servicio <|-- ServicioEquipo : herencia
+    Servicio <|-- ServicioConsultoria : herencia
+
+    Reserva "1" --> "1" Cliente : cliente
+    Reserva "1" --> "1" Servicio : servicio
+    Reserva "1" --> "1" EstadoReserva : estado
+    GestorReservas "1" o-- "0..*" Reserva : gestiona (memoria)
+
+    ErrorSoftwareFJ <|-- ErrorValidacion
+    ErrorSoftwareFJ <|-- ErrorReservaInvalida
+    ErrorSoftwareFJ <|-- ErrorOperacion
+    ErrorValidacion <|-- ErrorClienteInvalido
+    ErrorValidacion <|-- ErrorServicioInvalido
+    ErrorReservaInvalida <|-- ErrorEstadoReserva
+    ErrorReservaInvalida <|-- ErrorDisponibilidad
+```
+
+### Collaborative Git workflow
+
+```mermaid
+gitGraph
+    commit id: "feat: initial setup and architecture (Julian Cano)"
+    branch feature/leo-modelos
+    commit id: "feat(models): base entities and client validation (Leo Diaz)"
+    checkout main
+    branch feature/john-servicios
+    commit id: "feat(services): polymorphism and custom exceptions (John Arroyo)"
+    checkout main
+    branch feature/camilo-reservas
+    commit id: "feat(reservations): reservation logic and logging (Camilo)"
+    checkout main
+    branch feature/santiago-simulacion
+    commit id: "feat(simulation): 10 operations and error handling (Santiago)"
+```
+
+### How to run
+
+Locally (Python 3.12+):
+
+```bash
+python main.py
+```
+
+With Docker:
+
+```bash
+docker build -t software-fj .
+docker run --rm software-fj
+```
+
+The simulation executes 21 operations (valid and invalid clients, correct and
+incorrect services, successful and failed reservations) using `try/except`,
+`try/except/else`, `try/except/finally` and exception chaining. The application
+never crashes: every failure is caught, logged to `logs/software_fj.log` and the
+next operation continues.
