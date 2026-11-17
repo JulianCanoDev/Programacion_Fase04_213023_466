@@ -57,11 +57,11 @@ A PDF document containing:
 
 | Member | Role | GitHub |
 |--------|------|--------|
-| Julián Cano | Base setup, containerization and architecture | [JulianCanoDev](https://github.com/JulianCanoDev) |
+| Julian Andres Cano Orozco | Base setup, containerization and architecture | [JulianCanoDev](https://github.com/JulianCanoDev) |
 | Leo Diaz | Models: base entity and client | — |
-| John Arroyo | Services and custom exceptions | — |
-| Camilo | Reservations and logging | — |
-| Santiago | Simulation and error handling | — |
+| John Alexander Arroyo Fuelantala | Services and custom exceptions | — |
+| Camilo Andres Hernandez Soler | Reservations and logging | — |
+| Santiago Guerrero Banda | Simulation and error handling | — |
 
 ## Technologies
 
@@ -81,28 +81,28 @@ the system is the log file `logs/software_fj.log`.
 
 | Member | Responsibility | Files |
 |--------|----------------|-------|
-| Julián Cano | Base setup, containerization and architecture | `Dockerfile`, `requirements.txt`, `README.md` |
+| Julian Andres Cano Orozco | Base setup, containerization and architecture | `Dockerfile`, `requirements.txt`, `README.md` |
 | Leo Diaz | Domain model: base entity and client | `models/entidades.py`, `models/cliente.py` |
-| John Arroyo | Services (polymorphism) and custom exceptions | `models/servicios.py`, `utils/excepciones.py` |
-| Camilo | Reservations and logging | `models/reserva.py`, `utils/logger.py` |
-| Santiago | Simulation of 10+ operations with advanced exception handling | `main.py` |
+| John Alexander Arroyo Fuelantala | Services (polymorphism) and custom exceptions | `models/servicios.py`, `utils/excepciones.py` |
+| Camilo Andres Hernandez Soler | Reservations and logging | `models/reserva.py`, `utils/logger.py` |
+| Santiago Guerrero Banda | Simulation of 10+ operations with advanced exception handling | `main.py` |
 
 ### Project structure
 
 ```
 .
-├── Dockerfile              # Base setup (Julián Cano)
-├── requirements.txt        # Base setup (Julián Cano)
-├── README.md               # Base setup + UML (Julián Cano)
-├── main.py                 # Simulation (Santiago)
+├── Dockerfile              # Base setup (Julian Andres Cano Orozco)
+├── requirements.txt        # Base setup (Julian Andres Cano Orozco)
+├── README.md               # Base setup + UML (Julian Andres Cano Orozco)
+├── main.py                 # Simulation (Santiago Guerrero Banda)
 ├── models/
 │   ├── entidades.py        # Abstract base entity (Leo Diaz)
 │   ├── cliente.py          # Cliente with strict validation (Leo Diaz)
-│   ├── servicios.py        # Servicio hierarchy (John Arroyo)
-│   └── reserva.py          # Reserva + GestorReservas (Camilo)
+│   ├── servicios.py        # Servicio hierarchy (John Alexander Arroyo Fuelantala)
+│   └── reserva.py          # Reserva + GestorReservas (Camilo Andres Hernandez Soler)
 ├── utils/
-│   ├── excepciones.py      # Custom exception hierarchy (John Arroyo)
-│   └── logger.py           # Event/error log configuration (Camilo)
+│   ├── excepciones.py      # Custom exception hierarchy (John Alexander Arroyo Fuelantala)
+│   └── logger.py           # Event/error log configuration (Camilo Andres Hernandez Soler)
 └── logs/
     └── software_fj.log     # Only file I/O allowed (auto-generated)
 ```
